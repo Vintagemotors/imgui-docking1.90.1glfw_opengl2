@@ -34,7 +34,7 @@ if(UNIX AND NOT APPLE)
     )
 
     find_library(GLFW_LIBRARY
-        NAMES glfw3
+        NAMES glfw
         HINTS ${GLFW_BUILD_DIR}/lib
     )
 
