@@ -60,6 +60,10 @@ jobs:
         run: |
           echo "build-output-dir-glfw=${{ github.workspace }}/build-null-shared" >> "$GITHUB_OUTPUT"
 
+      - name: Print GLFW build directory contents
+        run: |
+          ls -R /home/runner/work/imgui-docking1.90.1glfw_opengl2/imgui-docking1.90.1glfw_opengl2/
+
       # Your Project Build Steps
       - name: Checkout Your Project
         uses: actions/checkout@v4
