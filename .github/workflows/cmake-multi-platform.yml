@@ -107,7 +107,7 @@ jobs:
 
 
 
-        build:
+    build:
           runs-on: ${{ matrix.os }}
           strategy:
            fail-fast: false
