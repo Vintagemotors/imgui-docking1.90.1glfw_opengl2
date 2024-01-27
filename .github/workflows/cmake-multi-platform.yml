@@ -59,9 +59,9 @@ jobs:
             CMAKE_OSX_ARCHITECTURES: x86_64;arm64
         steps:
             - uses: actions/checkout@v4
-                    with:
-          repository: glfw/glfw
-          ref: 3.3.9
+              with:
+                repository: glfw/glfw
+                ref: 3.3.9
 
             - name: Configure Null shared library
               run: cmake -B build-null-shared -D GLFW_BUILD_COCOA=OFF -D BUILD_SHARED_LIBS=ON
