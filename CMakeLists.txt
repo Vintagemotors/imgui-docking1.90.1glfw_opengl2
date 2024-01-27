@@ -18,6 +18,12 @@ add_executable(example_glfw_opengl2 ${SOURCES})
 
 target_include_directories(example_glfw_opengl2 PRIVATE ${IMGUI_DIR} ${IMGUI_DIR}/backends)
 
+# Add include directories
+include_directories("/home/runner/work/imgui-docking1.90.1glfw_opengl2/imgui-docking1.90.1glfw_opengl2/include")
+
+# Add library directories
+link_directories("/home/runner/work/imgui-docking1.90.1glfw_opengl2/imgui-docking1.90.1glfw_opengl2/build-null-shared/src")
+
 if(UNIX AND NOT APPLE)
     # Linux
     set(GLFW_BUILD_DIR "/home/runner/work/imgui-docking1.90.1glfw_opengl2/imgui-docking1.90.1glfw_opengl2/build-null-shared")
