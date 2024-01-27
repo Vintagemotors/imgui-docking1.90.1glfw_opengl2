@@ -24,6 +24,12 @@ jobs:
               run: |
                   sudo apt update
                   sudo apt install libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev libxkbcommon-dev
+
+            - uses: actions/checkout@v4
+              with:
+                repository: glfw/glfw
+                ref: 3.3.9
+
             - name: Configure Null shared library
               run: cmake -B build-null-shared -D GLFW_BUILD_WAYLAND=OFF -D GLFW_BUILD_X11=OFF -D BUILD_SHARED_LIBS=ON
             - name: Build Null shared library
