@@ -86,10 +86,10 @@ jobs:
             CFLAGS: /WX
         steps:
             - uses: actions/checkout@v4
-                                with:
-          repository: glfw/glfw
-          ref: 3.3.9
-
+              with:
+                repository: glfw/glfw
+                ref: 3.3.9
+                
             - name: Configure Win32 shared x86 library
               run: cmake -B build-win32-shared-x86 -G "Visual Studio 17 2022" -A Win32 -D BUILD_SHARED_LIBS=ON
             - name: Build Win32 shared x86 library
