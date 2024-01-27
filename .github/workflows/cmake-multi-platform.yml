@@ -106,7 +106,7 @@ Imgui Build:
 
     build:
       runs-on: ${{ matrix.os }}
-       strategy:
+      strategy:
          fail-fast: false
 
       # Set up a matrix to run the following 3 configurations:
