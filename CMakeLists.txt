@@ -18,12 +18,23 @@ add_executable(example_glfw_opengl2 ${SOURCES})
 
 target_include_directories(example_glfw_opengl2 PRIVATE ${IMGUI_DIR} ${IMGUI_DIR}/backends)
 
+
 if(UNIX AND NOT APPLE)
     # Linux
+    set(GLFW_BUILD_DIR "/home/runner/work/imgui-docking1.90.1glfw_opengl2/imgui-docking1.90.1glfw_opengl2/build-null-shared")
+
     find_package(PkgConfig REQUIRED)
     pkg_search_module(GLFW REQUIRED glfw3)
+    
+    if(NOT GLFW_FOUND)
+        message(FATAL_ERROR "GLFW3 not found. Set GLFW_BUILD_DIR to the path where GLFW is built.")
+    endif()
+
     target_link_libraries(example_glfw_opengl2 PRIVATE ${GLFW_LIBRARIES} -lGL)
+    target_include_directories(example_glfw_opengl2 PRIVATE ${GLFW_INCLUDE_DIRS})
     target_compile_options(example_glfw_opengl2 PRIVATE ${GLFW_CFLAGS_OTHER})
+endif()
+
 elseif(APPLE)
     # macOS
     find_package(glfw3 REQUIRED)
