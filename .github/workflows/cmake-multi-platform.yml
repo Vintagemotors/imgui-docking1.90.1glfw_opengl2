@@ -106,11 +106,11 @@ jobs:
               run: cmake --build build-win32-shared-x64 --parallel
 
 
-Imgui Build: 
+    Imgui Build: 
 
-    build:
-      runs-on: ${{ matrix.os }}
-      strategy:
+      build:
+        runs-on: ${{ matrix.os }}
+        strategy:
          fail-fast: false
 
       # Set up a matrix to run the following 3 configurations:
