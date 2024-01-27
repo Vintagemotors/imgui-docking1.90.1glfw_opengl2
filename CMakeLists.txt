@@ -38,9 +38,6 @@ if(UNIX AND NOT APPLE)
         HINTS ${GLFW_BUILD_DIR}/lib
     )
 
-    if(NOT GLFW_INCLUDE_DIR OR NOT GLFW_LIBRARY)
-        message(FATAL_ERROR "GLFW3 not found. Set GLFW_BUILD_DIR to the path where GLFW is built.")
-    endif()
 
     target_include_directories(example_glfw_opengl2 PRIVATE ${GLFW_INCLUDE_DIR})
     target_link_libraries(example_glfw_opengl2 PRIVATE ${GLFW_LIBRARY} -lGL)
