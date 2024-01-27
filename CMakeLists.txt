@@ -14,7 +14,7 @@ set(SOURCES
     ${IMGUI_DIR}/backends/imgui_impl_opengl2.cpp
 )
 
-add_executable(imgui-docking1.90.1glfw_opengl2 ${SOURCES})
+add_executable(example_glfw_opengl2 ${sources} ${IMGUI_DIR}/backends/imgui_impl_glfw.cpp ${IMGUI_DIR}/backends/imgui_impl_opengl2.cpp ${IMGUI_DIR}/imgui.cpp ${IMGUI_DIR}/imgui_draw.cpp ${IMGUI_DIR}/imgui_demo.cpp ${IMGUI_DIR}/imgui_tables.cpp ${IMGUI_DIR}/imgui_widgets.cpp)
 
 target_include_directories(imgui-docking1.90.1glfw_opengl2 PRIVATE ${IMGUI_DIR} ${IMGUI_DIR}/backends)
 
