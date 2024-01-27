@@ -5,11 +5,11 @@ set(IMGUI_DIR ../..)
 
 set(SOURCES
     main.cpp
-    ${IMGUI_DIR}/imgui.cpp
-    ${IMGUI_DIR}/imgui_demo.cpp
-    ${IMGUI_DIR}/imgui_draw.cpp
-    ${IMGUI_DIR}/imgui_tables.cpp
-    ${IMGUI_DIR}/imgui_widgets.cpp
+    ${IMGUI_DIR}/src/imgui.cpp
+    ${IMGUI_DIR}/src/imgui_demo.cpp
+    ${IMGUI_DIR}/src/imgui_draw.cpp
+    ${IMGUI_DIR}/src/imgui_tables.cpp
+    ${IMGUI_DIR}/src/imgui_widgets.cpp
     ${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
     ${IMGUI_DIR}/backends/imgui_impl_opengl2.cpp
 )
