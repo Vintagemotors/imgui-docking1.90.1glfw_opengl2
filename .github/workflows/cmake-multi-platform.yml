@@ -8,14 +8,31 @@ on:
 
 jobs:
 
-  build-linux-clang:
-    name: Linux (Clang)
-
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    env:
-      CC: clang
-      CFLAGS: -Werror
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        build_type: [Release]
+        c_compiler: [gcc, clang, cl]
+        include:
+          - os: windows-latest
+            c_compiler: cl
+            cpp_compiler: cl
+          - os: ubuntu-latest
+            c_compiler: gcc
+            cpp_compiler: g++
+          - os: ubuntu-latest
+            c_compiler: clang
+            cpp_compiler: clang++
+        exclude:
+          - os: windows-latest
+            c_compiler: gcc
+          - os: windows-latest
+            c_compiler: clang
+          - os: ubuntu-latest
+            c_compiler: cl
 
     steps:
       - name: Checkout GLFW
@@ -23,133 +40,47 @@ jobs:
         with:
           repository: glfw/glfw
           ref: 3.3.9
+          submodules: recursive  # Fetch submodules (including GLFW)
 
-      - name: Install dependencies
+      - name: Install dependencies (only for Linux)
+        if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt update
           sudo apt install libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev libxkbcommon-dev
 
-      - name: Configure Null shared library
+      - name: Configure Null shared library for GLFW
         run: cmake -B build-null-shared -D GLFW_BUILD_WAYLAND=OFF -D GLFW_BUILD_X11=OFF -D BUILD_SHARED_LIBS=ON
-      - name: Build Null shared library
+      - name: Build Null shared library for GLFW
         run: cmake --build build-null-shared --parallel
 
-      # Save the built GLFW library as an artifact
-      - name: Archive GLFW
-        uses: actions/upload-artifact@v2
-        with:
-          name: glfw-artifact
-          path: build-null-shared
+      # Add similar steps for other GLFW configurations (e.g., X11, Wayland, etc.)
 
-  build-macos-clang:
-    name: macOS (Clang)
-    runs-on: macos-latest
-    timeout-minutes: 10
-    env:
-      CFLAGS: -Werror
-      MACOSX_DEPLOYMENT_TARGET: 10.8
-      CMAKE_OSX_ARCHITECTURES: x86_64;arm64
+      - name: Set reusable strings for GLFW
+        id: strings-glfw
+        run: |
+          echo "build-output-dir-glfw=${{ github.workspace }}/build-null-shared" >> "$GITHUB_OUTPUT"
 
-    steps:
-      - name: Checkout GLFW
+      # Your Project Build Steps
+      - name: Checkout Your Project
         uses: actions/checkout@v4
-        with:
-          repository: glfw/glfw
-          ref: 3.3.9
 
-      - name: Configure Null shared library
-        run: cmake -B build-null-shared -D GLFW_BUILD_COCOA=OFF -D BUILD_SHARED_LIBS=ON
-      - name: Build Null shared library
-        run: cmake --build build-null-shared --parallel
+      - name: Set reusable strings for your project
+        id: strings
+        shell: bash
+        run: |
+          echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
-      # Save the built GLFW library as an artifact
-      - name: Archive GLFW
-        uses: actions/upload-artifact@v2
-        with:
-          name: glfw-artifact
-          path: build-null-shared
+      - name: Configure CMake for your project
+        run: >
+          cmake -B ${{ steps.strings.outputs.build-output-dir }}
+          -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
+          -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          -S ${{ github.workspace }}
 
-  build-windows-vs2022:
-    name: Windows (VS2022)
-    runs-on: windows-latest
-    timeout-minutes: 10
-    env:
-      CFLAGS: /WX
+      - name: Build your project
+        run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
 
-    steps:
-      - name: Checkout GLFW
-        uses: actions/checkout@v4
-        with:
-          repository: glfw/glfw
-          ref: 3.3.9
-
-      - name: Configure Win32 shared x86 library
-        run: cmake -B build-win32-shared-x86 -G "Visual Studio 17 2022" -A Win32 -D BUILD_SHARED_LIBS=ON
-      - name: Build Win32 shared x86 library
-        run: cmake --build build-win32-shared-x86 --parallel
-
-      # Save the built GLFW library as an artifact
-      - name: Archive GLFW
-        uses: actions/upload-artifact@v2
-        with:
-          name: glfw-artifact
-          path: build-win32-shared-x86
-
-  build:
-      runs-on: ${{ matrix.os }}
-      needs: [build-linux-clang, build-macos-clang, build-windows-vs2022]
-
-      strategy:
-        fail-fast: false
-        matrix:
-          os: [ubuntu-latest, windows-latest]
-          build_type: [Release]
-          c_compiler: [gcc, clang, cl]
-          include:
-            - os: windows-latest
-              c_compiler: cl
-              cpp_compiler: cl
-            - os: ubuntu-latest
-              c_compiler: gcc
-              cpp_compiler: g++
-            - os: ubuntu-latest
-              c_compiler: clang
-              cpp_compiler: clang++
-          exclude:
-            - os: windows-latest
-              c_compiler: gcc
-            - os: windows-latest
-              c_compiler: clang
-            - os: ubuntu-latest
-              c_compiler: cl
-
-      steps:
-        - name: Checkout source code
-          uses: actions/checkout@v4
-
-    # Restore the GLFW library artifact
-        - name: Download GLFW artifact
-          uses: actions/download-artifact@v2
-          with:
-            name: glfw-artifact
-            path: glfw-artifact
-
-        - name: Set reusable strings
-          id: strings
-          run: |
-            echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
-
-        - name: Configure CMake
-          run: >
-            cmake -B ${{ steps.strings.outputs.build-output-dir }}
-            -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
-            -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
-            -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-            -S ${{ github.workspace }}
-
-        - name: Build
-          run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
-
-        - name: Test
-          working-directory: ${{ steps.strings.outputs.build-output-dir }}
-          run: ctest --build-config ${{ matrix.build_type }}
+      - name: Test your project
+        working-directory: ${{ steps.strings.outputs.build-output-dir }}
+        run: ctest --build-config ${{ matrix.build_type }}
