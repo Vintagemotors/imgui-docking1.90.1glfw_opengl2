@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 project(example_glfw_opengl2)
 
-
-
 set(IMGUI_DIR ../..)
 
 set(SOURCES
@@ -16,7 +14,7 @@ set(SOURCES
     ${IMGUI_DIR}/backends/imgui_impl_opengl2.cpp
 )
 
-add_executable(example_glfw_opengl2 ${sources} ${IMGUI_DIR}/backends/imgui_impl_glfw.cpp ${IMGUI_DIR}/backends/imgui_impl_opengl2.cpp ${IMGUI_DIR}/imgui.cpp ${IMGUI_DIR}/imgui_draw.cpp ${IMGUI_DIR}/imgui_demo.cpp ${IMGUI_DIR}/imgui_tables.cpp ${IMGUI_DIR}/imgui_widgets.cpp)
+add_executable(example_glfw_opengl2 ${SOURCES})
 
 target_include_directories(example_glfw_opengl2 PRIVATE ${IMGUI_DIR} ${IMGUI_DIR}/backends)
 
