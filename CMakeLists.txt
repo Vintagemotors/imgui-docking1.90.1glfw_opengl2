@@ -22,16 +22,24 @@ if(UNIX AND NOT APPLE)
     # Linux
     set(GLFW_BUILD_DIR "/home/runner/work/imgui-docking1.90.1glfw_opengl2/imgui-docking1.90.1glfw_opengl2/build-null-shared")
 
-    find_package(PkgConfig REQUIRED)
-    pkg_search_module(GLFW REQUIRED glfw3)
-    
-    if(NOT GLFW_FOUND)
+    find_path(GLFW_INCLUDE_DIR GLFW/glfw3.h
+        HINTS ${GLFW_BUILD_DIR}/include
+        PATH_SUFFIXES glfw
+    )
+
+    find_library(GLFW_LIBRARY
+        NAMES glfw3
+        HINTS ${GLFW_BUILD_DIR}/lib
+    )
+
+    if(NOT GLFW_INCLUDE_DIR OR NOT GLFW_LIBRARY)
         message(FATAL_ERROR "GLFW3 not found. Set GLFW_BUILD_DIR to the path where GLFW is built.")
     endif()
 
-    target_link_libraries(example_glfw_opengl2 PRIVATE ${GLFW_LIBRARIES} -lGL)
-    target_include_directories(example_glfw_opengl2 PRIVATE ${GLFW_INCLUDE_DIRS})
-    target_compile_options(example_glfw_opengl2 PRIVATE ${GLFW_CFLAGS_OTHER})
+    target_include_directories(example_glfw_opengl2 PRIVATE ${GLFW_INCLUDE_DIR})
+    target_link_libraries(example_glfw_opengl2 PRIVATE ${GLFW_LIBRARY} -lGL)
+    target_compile_options(example_glfw_opengl2 PRIVATE -pthread)
+endif()
 
     elseif(APPLE)
         # macOS
