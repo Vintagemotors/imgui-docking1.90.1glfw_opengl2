@@ -1,0 +1,10 @@
+            - name: Makefile Build Target Finder
+  # You may pin to the exact commit or the version.
+  # uses: meihei3/makefile-build-target-finder@70821348db734ffaca6051e9885e260f708b9b0f
+  uses: meihei3/makefile-build-target-finder@v0.1.0
+  with:
+    # The Makefile to find build targets from
+    makefile: # optional, default is Makefile
+    # Files to find with dependencies (separated by spaces)
+    dependencies: 
+          
