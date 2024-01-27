@@ -140,7 +140,7 @@ jobs:
                 - os: ubuntu-latest
                   c_compiler: cl
 
-                  steps:
+          steps:
 
                 - name: Set reusable strings
                   uses: actions/checkout@v4
