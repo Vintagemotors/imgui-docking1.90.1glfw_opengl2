@@ -35,30 +35,21 @@ jobs:
             c_compiler: cl
 
     steps:
-      - name: Checkout GLFW
-        uses: actions/checkout@v4
-        with:
-          repository: glfw/glfw
-          ref: 3.3.9
-          submodules: recursive  # Fetch submodules (including GLFW)
+  
 
-      - name: Install dependencies (only for Linux)
-        if: matrix.os == 'ubuntu-latest'
+      - name: Install GLFW as a module
         run: |
-          sudo apt update
-          sudo apt install libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev libxkbcommon-dev
+          if [ "${{ matrix.os }}" == "windows-latest" ]; then
+            # Download and install GLFW on Windows
+            curl -L https://github.com/glfw/glfw/releases/download/3.3.9/glfw-3.3.9.bin.WIN64.zip -o glfw.zip
+            unzip glfw.zip -d glfw
+            export GLFW_PATH=$(pwd)/glfw
+            echo "export PATH=\$PATH:${GLFW_PATH}/bin" >> $GITHUB_ENV
+          elif [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
+            sudo apt-get install libglfw3
+          fi
 
-      - name: Configure Null shared library for GLFW
-        run: cmake -B build-null-shared -D GLFW_BUILD_WAYLAND=OFF -D GLFW_BUILD_X11=OFF -D BUILD_SHARED_LIBS=ON
-      - name: Build Null shared library for GLFW
-        run: cmake --build build-null-shared --parallel
 
-      # Add similar steps for other GLFW configurations (e.g., X11, Wayland, etc.)
-
-      - name: Set reusable strings for GLFW
-        id: strings-glfw
-        run: |
-          echo "build-output-dir-glfw=${{ github.workspace }}/build-null-shared" >> "$GITHUB_OUTPUT"
 
       # Your Project Build Steps
       - name: Checkout Your Project
