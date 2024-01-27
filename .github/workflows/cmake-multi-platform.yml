@@ -12,7 +12,7 @@ jobs:
 
     build-linux-clang:
         name: Linux (Clang)
-        uses: glfw/glfw@3.3.9
+      
         runs-on: ubuntu-latest
         timeout-minutes: 4
         env:
@@ -51,7 +51,6 @@ jobs:
 
     build-macos-clang:
         name: macOS (Clang)
-        uses: glfw/glfw@3.3.9
         runs-on: macos-latest
         timeout-minutes: 4
         env:
@@ -60,6 +59,9 @@ jobs:
             CMAKE_OSX_ARCHITECTURES: x86_64;arm64
         steps:
             - uses: actions/checkout@v4
+                    with:
+          repository: glfw/glfw
+          ref: 3.3.9
 
             - name: Configure Null shared library
               run: cmake -B build-null-shared -D GLFW_BUILD_COCOA=OFF -D BUILD_SHARED_LIBS=ON
@@ -78,13 +80,15 @@ jobs:
 
     build-windows-vs2022:
         name: Windows (VS2022)
-        uses: glfw/glfw@3.3.9
         runs-on: windows-latest
         timeout-minutes: 4
         env:
             CFLAGS: /WX
         steps:
             - uses: actions/checkout@v4
+                                with:
+          repository: glfw/glfw
+          ref: 3.3.9
 
             - name: Configure Win32 shared x86 library
               run: cmake -B build-win32-shared-x86 -G "Visual Studio 17 2022" -A Win32 -D BUILD_SHARED_LIBS=ON
