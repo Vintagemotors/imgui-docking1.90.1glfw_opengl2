@@ -40,20 +40,17 @@ if(UNIX AND NOT APPLE)
     target_link_libraries(example_glfw_opengl2 PRIVATE ${GLFW_LIBRARY} -lGL)
     target_compile_options(example_glfw_opengl2 PRIVATE -pthread)
 
-
-
-
 elseif(APPLE)
     # macOS
     find_package(glfw3 REQUIRED)
     target_link_libraries(example_glfw_opengl2 PRIVATE glfw)
     target_compile_options(example_glfw_opengl2 PRIVATE -framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo)
     
-
 else()
     # Windows
     target_link_libraries(example_glfw_opengl2 PRIVATE glfw3 gdi32 opengl32 imm32)
     target_compile_options(example_glfw_opengl2 PRIVATE ${GLFW_CFLAGS_OTHER})
+
     elseif(WIN32)
     # Windows
     target_link_libraries(example_glfw_opengl2 PRIVATE glfw3 gdi32 opengl32 imm32)
