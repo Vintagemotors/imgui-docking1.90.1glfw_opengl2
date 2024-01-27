@@ -48,12 +48,10 @@ jobs:
           sudo apt update
           sudo apt install libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev libxkbcommon-dev
 
-      - name: Configure Null shared library for GLFW
+      - name: Build GLFW
         run: cmake -B build-null-shared -D GLFW_BUILD_WAYLAND=OFF -D GLFW_BUILD_X11=OFF -D BUILD_SHARED_LIBS=ON
       - name: Build Null shared library for GLFW
         run: cmake --build build-null-shared --parallel
-      - name: Install GLFW
-        run: cmake --install build-null-shared --prefix install-directory
 
       # Add similar steps for other GLFW configurations (e.g., X11, Wayland, etc.)
 
@@ -61,7 +59,6 @@ jobs:
         id: strings-glfw
         run: |
           echo "build-output-dir-glfw=${{ github.workspace }}/build-null-shared" >> "$GITHUB_OUTPUT"
-          echo "install-directory=${{ github.workspace }}/install-directory" >> "$GITHUB_OUTPUT"
 
       # Your Project Build Steps
       - name: Checkout Your Project
@@ -79,7 +76,7 @@ jobs:
           -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
           -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-          -DCMAKE_PREFIX_PATH="${{ steps.strings-glfw.outputs.install-directory }}"
+          -DGLFW_DIR="${{ steps.strings-glfw.outputs.build-output-dir-glfw }}"
           -S ${{ github.workspace }}
 
       - name: Build your project
